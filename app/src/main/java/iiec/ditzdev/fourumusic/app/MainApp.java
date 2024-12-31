@@ -1,5 +1,6 @@
 package iiec.ditzdev.fourumusic.app;
 
+import androidx.appcompat.app.AppCompatDelegate;
 import iiec.ditzdev.fourumusic.service.CrashHandlerService;
 import android.app.Application;
 import android.content.Intent;
@@ -27,6 +28,9 @@ public class MainApp extends Application {
         prefs = getSharedPreferences("crash_prefs", Context.MODE_PRIVATE);
         setupCrashHandler();
         checkPreviousCrash();
+        SharedPreferences prefs = getSharedPreferences("userPrefs", MODE_PRIVATE);
+        int savedTheme = prefs.getInt("theme_mode", AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+        AppCompatDelegate.setDefaultNightMode(savedTheme);
     }
 
     private void setupCrashHandler() {

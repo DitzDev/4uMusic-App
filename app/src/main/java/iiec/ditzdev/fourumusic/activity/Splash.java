@@ -2,6 +2,7 @@ package iiec.ditzdev.fourumusic.activity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import androidx.appcompat.app.AppCompatDelegate;
 import iiec.ditzdev.fourumusic.R;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,10 +16,11 @@ public class Splash extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        SharedPreferences prefs = getSharedPreferences("userPrefs", MODE_PRIVATE);
+        int savedTheme = prefs.getInt("theme_mode", AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+        AppCompatDelegate.setDefaultNightMode(savedTheme);
         setContentView(R.layout.splash);
-        SharedPreferences userPrefs = getSharedPreferences("userPrefs", MODE_PRIVATE);
-        boolean isNewUser = userPrefs.getBoolean("isNewUser", true);
-        
+        boolean isNewUser = prefs.getBoolean("isNewUser", true);
         TimerTask timer = new TimerTask() {
             @Override
             public void run() {
