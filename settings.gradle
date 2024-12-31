@@ -1,0 +1,3 @@
+rootProject.name = "4uMusic"
+
+include(":app")

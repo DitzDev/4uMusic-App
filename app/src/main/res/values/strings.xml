@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+    <string name="app_name">4uMusic</string>
+    <string name="app_slogan">Listen, Feel the experience</string>
+	<string name="drawer">4uMusic</string>
+	<string name="title_perm_storage">Storage Access</string>
+    <string name="subtitle_perm_storage">We need this permission to store and read all songs.</string>
+    <string name="action_continue">Continue</string>
+    <string name="title_appereance">Theme Application</string>
+    <string name="subtitle_appereance">Do you want to set the application theme?</string>
+</resources>
