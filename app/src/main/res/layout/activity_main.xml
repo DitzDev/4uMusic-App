@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/coordinator"
     android:layout_width="match_parent"
@@ -18,10 +18,33 @@
             android:background="?attr/android:colorBackground"
             app:title="@string/app_name" />
 
+        <com.google.android.material.tabs.TabLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/android:colorBackground">
+
+            <com.google.android.material.tabs.TabItem
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text="@string/tabs_item_home" />
+
+            <com.google.android.material.tabs.TabItem
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text="@string/tabs_item_song" />
+            
+            <com.google.android.material.tabs.TabItem 
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text="@string/tabs_item_download"/>
+
+        </com.google.android.material.tabs.TabLayout>
+        
         <View
             android:layout_height="2dp"
             android:layout_width="match_parent"
-            android:background="?attr/colorSecondary" />
+            android:background="?attr/colorSurfaceVariant" />
+        
     </com.google.android.material.appbar.AppBarLayout>
     <androidx.core.widget.NestedScrollView
         android:id="@+id/nested_scroll_view"

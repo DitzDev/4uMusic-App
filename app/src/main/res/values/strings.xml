@@ -18,4 +18,7 @@
     <string name="greeting_afternoon">Good Afternoon!</string>
     <string name="good_afternoon">Good Afternoon!</string>
     <string name="good_night">Good Night!</string>
+    <string name="tabs_item_home">Home</string>
+    <string name="tabs_item_song">Song</string>
+    <string name="tabs_item_download">Download</string>
 </resources>
