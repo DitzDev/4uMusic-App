@@ -1,9 +1,11 @@
 package iiec.ditzdev.fourumusic.activity;
 
+import com.google.android.material.tabs.TabLayoutMediator;
 import iiec.ditzdev.fourumusic.R;
 import android.icu.util.Calendar;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
+import iiec.ditzdev.fourumusic.activity.adapter.LayoutAdapter;
 import iiec.ditzdev.fourumusic.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity {
@@ -16,6 +18,17 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
         /* Greeting */
         binding.toolbar.setSubtitle(greetingTime());
+        /* Set adapter */
+        LayoutAdapter adapter = new LayoutAdapter(this);
+        binding.viewPager.setAdapter(adapter);
+        
+        new TabLayoutMediator(binding.tabLayout, binding.viewPager, (tab, strategy) -> {
+            switch (strategy) {
+                case 0: tab.setText(getString(R.string.tabs_item_home)); break;
+                case 1: tab.setText(getString(R.string.tabs_item_song)); break;
+                case 2: tab.setText(getString(R.string.tabs_item_download)); break;
+            }
+        }).attach();
     }
     
     private String greetingTime() {
