@@ -13,7 +13,7 @@
         <TextView
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
-            android:text="Set Theme"
+            android:text="@string/title_dialog_theme"
             android:textSize="25sp"
             android:textAppearance="?attr/textAppearanceHeadline6" />
     </LinearLayout>
@@ -39,7 +39,7 @@
                 android:clickable="true"
                 android:focusable="true"
                 android:background="?attr/selectableItemBackground"
-                app:title="Folow System" />
+                app:title="@string/title_item_set_follow_system" />
 
             <iiec.ditzdev.fourumusic.components.SettingsRadioCheck
                 android:id="@+id/set_theme_dark"
@@ -49,7 +49,7 @@
                 android:clickable="true"
                 android:focusable="true"
                 android:background="?attr/selectableItemBackground"
-                app:title="Dark Theme" />
+                app:title="@string/title_item_set_dark_theme" />
 
             <iiec.ditzdev.fourumusic.components.SettingsRadioCheck
                 android:id="@+id/set_theme_light"
@@ -59,7 +59,7 @@
                 android:clickable="true"
                 android:focusable="true"
                 android:background="?attr/selectableItemBackground"
-                app:title="Light Theme" />
+                app:title="@string/title_item_set_light_theme" />
         </LinearLayout>
     </ScrollView>
     <View

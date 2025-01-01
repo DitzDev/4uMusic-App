@@ -140,7 +140,7 @@ public class StartupPage extends AppCompatActivity {
         
         new MaterialAlertDialogBuilder(this)
             .setView(showView)
-            .setPositiveButton("OK, Set this", (dialog, which) -> {
+            .setPositiveButton(getString(R.string.action_ok), (dialog, which) -> {
                 int selectedTheme = AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM;
                 SharedPreferences.Editor editor = prefs.edit();
                 if (setFollowSystem.isChecked()) {
@@ -159,7 +159,7 @@ public class StartupPage extends AppCompatActivity {
                 dialog.dismiss();
                 recreate();
             })
-            .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss())
+            .setNegativeButton(getString(R.string.action_cancel), (dialog, which) -> dialog.dismiss())
             .show();
     }
     

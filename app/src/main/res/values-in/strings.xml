@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">4uMusic</string>
+    <string name="app_slogan">Dengarkan, Rasakan pengalamannya</string>
+	<string name="drawer">4uMusic</string>
+	<string name="title_perm_storage">Akses Penyimpanan</string>
+    <string name="subtitle_perm_storage">Kami memerlukan izin ini untuk menyimpan dan membaca semua lagu.</string>
+    <string name="action_continue">Lanjutkan</string>
+    <string name="action_ok">Oke, Sudah</string>
+    <string name="action_cancel">Batalkan</string>
+    <string name="title_appereance">Tema Aplikasi</string>
+    <string name="subtitle_appereance">Apakah Anda ingin mengatur tema aplikasi?</string>
+    <string name="title_dialog_theme">Atur Tema</string>
+    <string name="title_item_set_follow_system">Ikuti Sistem</string>
+    <string name="title_item_set_dark_theme">Tema Gelap</string>
+    <string name="title_item_set_light_theme">Tema Terang</string>
+    <string name="greeting_morning">Selamat Pagi!</string>
+    <string name="greeting_afternoon">Selamat Siang!</string>
+    <string name="good_afternoon">Selamat Sore!</string>
+    <string name="good_night">Selamat Malam!</string>
+</resources>

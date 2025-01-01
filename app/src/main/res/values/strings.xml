@@ -1,12 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <resources>
     <string name="app_name">4uMusic</string>
-    <string name="app_slogan">Listen, Feel the experience</string>
-	<string name="drawer">4uMusic</string>
-	<string name="title_perm_storage">Storage Access</string>
-    <string name="subtitle_perm_storage">We need this permission to store and read all songs.</string>
+    <string name="app_slogan">Listen, Feel the Experience</string>
+    <string name="drawer">4uMusic</string>
+    <string name="title_perm_storage">Storage Access</string>
+    <string name="subtitle_perm_storage">We need this permission to save and read all songs.</string>
     <string name="action_continue">Continue</string>
-    <string name="title_appereance">Theme Application</string>
-    <string name="subtitle_appereance">Do you want to set the application theme?</string>
+    <string name="action_ok">OK, Set This</string>
+    <string name="action_cancel">Cancel</string>
+    <string name="title_appereance">App Theme</string>
+    <string name="subtitle_appereance">Would you like to set the app theme?</string>
+    <string name="title_dialog_theme">Set Theme</string>
+    <string name="title_item_set_follow_system">Follow System</string>
+    <string name="title_item_set_dark_theme">Dark Theme</string>
+    <string name="title_item_set_light_theme">Light Theme</string>
+    <string name="greeting_morning">Good Morning!</string>
+    <string name="greeting_afternoon">Good Afternoon!</string>
+    <string name="good_afternoon">Good Afternoon!</string>
+    <string name="good_night">Good Night!</string>
 </resources>
