@@ -53,11 +53,12 @@
                 android:textSize="25dp" />
 
             <Button
-                style="@style/Widget.Material3.Button.TextButton"
+                style="@style/Widget.Material3.Button.TextButton.Icon"
                 android:id="@+id/textButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Tambah Daftar Putar" />
+                android:text="Tambah Daftar Putar"
+                app:icon="@drawable/icon_plus" />
         </LinearLayout>
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

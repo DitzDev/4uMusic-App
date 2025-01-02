@@ -9,7 +9,8 @@
     <string name="action_ok">Oke, Sudah</string>
     <string name="action_cancel">Batalkan</string>
     <string name="title_appereance">Tema Aplikasi</string>
-    <string name="subtitle_appereance">Apakah Anda ingin mengatur tema aplikasi?</string>
+    <string name="subtitle_appereance">Apakah Anda ingin mengatur tema UI Aplikasi?</string>
+    <string name="string_subtitle_appereance">Pilih tema UI Aplikasi</string>
     <string name="title_dialog_theme">Atur Tema</string>
     <string name="title_item_set_follow_system">Ikuti Sistem</string>
     <string name="title_item_set_dark_theme">Tema Gelap</string>

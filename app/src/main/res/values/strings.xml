@@ -9,7 +9,8 @@
     <string name="action_ok">OK, Set This</string>
     <string name="action_cancel">Cancel</string>
     <string name="title_appereance">App Theme</string>
-    <string name="subtitle_appereance">Would you like to set the app theme?</string>
+    <string name="subtitle_appereance">Would you like to set the Application UI theme?</string>
+    <string name="string_subtitle_appereance">Select Application UI theme</string>
     <string name="title_dialog_theme">Set Theme</string>
     <string name="title_item_set_follow_system">Follow System</string>
     <string name="title_item_set_dark_theme">Dark Theme</string>

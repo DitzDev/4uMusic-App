@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/coordinator"
     android:layout_width="match_parent"
@@ -34,6 +34,56 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
+        <LinearLayout
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:layout_marginTop="15dp">
+            <iiec.ditzdev.fourumusic.components.SettingsLayout
+                android:id="@+id/btnSetTheme"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:orientation="vertical"
+                android:clickable="true"
+                android:focusable="true"
+                android:background="?attr/selectableItemBackground"
+                app:title="@string/title_appereance"
+                app:subtitle="@string/string_subtitle_appereance"
+                app:icon="@drawable/icon_theme" />
 
+
+            <View
+                android:layout_height="2dp"
+                android:layout_width="match_parent"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="15dp"
+                android:background="?attr/colorSurfaceVariant" />
+            
+            <iiec.ditzdev.fourumusic.components.SettingsLayout
+                android:id="@+id/openSourceCode"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:orientation="vertical"
+                android:clickable="true"
+                android:focusable="true"
+                android:background="?attr/selectableItemBackground"
+                app:title="Source Code"
+                app:subtitle="Source Code On GitHub"
+                app:icon="@drawable/icon_code" />
+            
+            <iiec.ditzdev.fourumusic.components.SettingsLayout
+                android:id="@+id/openLicense"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:orientation="vertical"
+                android:clickable="true"
+                android:focusable="true"
+                android:background="?attr/selectableItemBackground"
+                app:title="Open Source License"
+                app:icon="@drawable/icon_license" />
+        </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
