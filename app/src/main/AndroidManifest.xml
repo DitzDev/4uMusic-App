@@ -33,6 +33,8 @@
             android:name=".activity.MainActivity" />
         <activity
             android:name=".activity.StartupPage" />
+        <activity 
+            android:name=".activity.SettingsActivity" />
         <service 
             android:name=".service.CrashHandlerService" 
             android:exported="false" 

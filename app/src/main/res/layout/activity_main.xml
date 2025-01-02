@@ -17,6 +17,7 @@
             android:layout_height="wrap_content"
             android:minHeight="?attr/actionBarSize"
             android:background="?attr/android:colorBackground"
+            app:menu="@menu/main_menu_toolbar"
             app:title="@string/app_name" />
 
         <com.google.android.material.tabs.TabLayout

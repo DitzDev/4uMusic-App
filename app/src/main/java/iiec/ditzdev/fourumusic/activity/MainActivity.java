@@ -1,5 +1,8 @@
 package iiec.ditzdev.fourumusic.activity;
 
+import android.content.Intent;
+import android.view.Menu;
+import android.widget.Toast;
 import com.google.android.material.tabs.TabLayoutMediator;
 import iiec.ditzdev.fourumusic.R;
 import android.icu.util.Calendar;
@@ -7,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import iiec.ditzdev.fourumusic.activity.adapter.LayoutAdapter;
 import iiec.ditzdev.fourumusic.databinding.ActivityMainBinding;
+import java.lang.reflect.Method;
 
 public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
@@ -18,6 +22,16 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
         /* Greeting */
         binding.toolbar.setSubtitle(greetingTime());
+        /* Toolbar */
+        binding.toolbar.setPopupTheme(R.style.OverflowMenuStyle);
+        binding.toolbar.setOnMenuItemClickListener(item -> {
+           int itemId = item.getItemId();
+           if (itemId == R.id.settings) {
+               startActivity(new Intent(this, SettingsActivity.class));   
+               return true;
+           }
+           return false;     
+        });
         /* Set adapter */
         LayoutAdapter adapter = new LayoutAdapter(this);
         binding.viewPager.setAdapter(adapter);
@@ -46,7 +60,31 @@ public class MainActivity extends AppCompatActivity {
         }
         return greeting;
     }
-    
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_menu_toolbar, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onMenuOpened(int featureId, Menu menu) {
+        if (menu != null) {
+            if (menu.getClass().getSimpleName().equals("MenuBuilder")) {
+                try {
+                    Method method =
+                            menu.getClass()
+                                    .getDeclaredMethod("setOptionalIconsVisible", Boolean.TYPE);
+                    method.setAccessible(true);
+                    method.invoke(menu, true);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return super.onMenuOpened(featureId, menu);
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();

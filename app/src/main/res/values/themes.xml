@@ -1,5 +1,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <style name="AppTheme" parent="Theme.Material3.DayNight.NoActionBar">
+    <style
+            name="AppTheme"
+            parent="Theme.Material3.DayNight.NoActionBar">
         <item name="colorPrimary">@color/md_theme_light_primary</item>
         <item name="colorOnPrimary">@color/md_theme_light_onPrimary</item>
         <item name="colorPrimaryContainer">@color/md_theme_light_primaryContainer</item>
@@ -30,16 +32,27 @@
         <item name="colorPrimaryInverse">@color/md_theme_light_inversePrimary</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
         <item name="android:statusBarColor">@android:color/white</item>
-        <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">true</item>
+        <item
+                name="android:windowLightNavigationBar"
+                tools:targetApi="o_mr1">true</item>
         <item name="android:windowTranslucentNavigation">false</item>
         <item name="android:windowTranslucentStatus">false</item>
         <item name="android:windowLightStatusBar">true</item>
         <item name="android:textViewStyle">@style/FontCustomText</item>
+        <item name="actionOverflowMenuStyle">@style/OverflowMenuStyle</item>
     </style>
-    
+
     <!-- For Font Family -->
-    <style name="FontCustomText" parent="android:Widget.TextView">
+    <style
+            name="FontCustomText"
+            parent="android:Widget.TextView">
         <item name="android:fontFamily">@font/gilroy</item>
         <item name="android:textSize">16dp</item>
+    </style>
+
+    <style
+            name="OverflowMenuStyle"
+            parent="Widget.Material3.PopupMenu.Overflow">
+        <item name="overlapAnchor">false</item>
     </style>
 </resources>
