@@ -1,6 +1,7 @@
 package iiec.ditzdev.fourumusic.activity.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import iiec.ditzdev.fourumusic.activity.MusicPlayerActivity;
 import java.util.ArrayList;
 import iiec.ditzdev.fourumusic.R;
 import iiec.ditzdev.fourumusic.models.MusicModels;
@@ -47,11 +49,10 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MusicViewHol
                 v -> {
                     if (listener != null) {
                         listener.onItemClick(music);
+                        context.startActivity(new Intent(context, MusicPlayerActivity.class).putParcelableArrayListExtra("MUSIC_LIST", musicList).putExtra("POSITION", position));
                     }
                 });
-//        holder.musicThumbnail.setImageResource(R.drawable.icon_foldermusic);
-    }
-
+        }
     @Override
     public int getItemCount() {
         return musicList.size();
@@ -65,7 +66,6 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MusicViewHol
             super(itemView);
             musicFileName = itemView.findViewById(R.id.musicFileName);
             musicDuration = itemView.findViewById(R.id.musicDuration);
-//            musicThumbnail = itemView.findViewById(R.id.musicThumbnail);
         }
     }
 

@@ -33,15 +33,19 @@ android {
 
     buildFeatures {
         viewBinding true
-        
     }
     
+    lintOptions {
+        disable 'GradleDependency'
+    }
 }
 
 dependencies {
     implementation("io.github.tashilapathum:please-wait:0.5.0")
     implementation("androidx.browser:browser:1.5.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
+    implementation("com.android.support:support-media-compat:28.0.0")
+    implementation("androidx.media:media:1.6.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("com.google.android.gms:play-services-oss-licenses:17.0.0")
     implementation("com.google.android.material:material:1.9.0")
