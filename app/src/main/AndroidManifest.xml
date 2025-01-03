@@ -35,6 +35,9 @@
             android:name=".activity.StartupPage" />
         <activity 
             android:name=".activity.SettingsActivity" />
+        
+        <activity 
+            android:name=".activity.MusicView" />
         <service 
             android:name=".service.CrashHandlerService" 
             android:exported="false" 
