@@ -4,6 +4,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" tools:ignore="ScopedStorage" />
@@ -46,5 +47,13 @@
             android:name=".service.CrashHandlerService" 
             android:exported="false" 
             android:enabled="true" />
+        <service 
+            android:name=".service.MusicService" 
+            android:exported="false" 
+            android:enabled="true"
+            android:foregroundServiceType="mediaPlayback" />
+        <receiver 
+            android:name=".receiver.NotificationReceiver"
+            android:enabled="true"/>
     </application>
 </manifest>

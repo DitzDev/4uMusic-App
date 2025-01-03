@@ -6,6 +6,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaMetadataRetriever;
@@ -21,6 +22,7 @@ import androidx.core.app.NotificationManagerCompat;
 import iiec.ditzdev.fourumusic.R;
 import iiec.ditzdev.fourumusic.activity.MusicPlayerActivity;
 import iiec.ditzdev.fourumusic.models.MusicModels;
+import iiec.ditzdev.fourumusic.receiver.NotificationReceiver;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -35,7 +37,8 @@ public class MusicService extends Service {
     private MediaSessionCompat mediaSession;
     private boolean isShuffleOn = false;
     private int repeatMode = 0;
-
+    private NotificationReceiver notificationReceiver;
+    
     public class LocalBinder extends Binder {
         public MusicService getService() {
             return MusicService.this;
@@ -48,6 +51,14 @@ public class MusicService extends Service {
         mediaPlayer = new MediaPlayer();
         createNotificationChannel();
         initMediaSession();
+
+        notificationReceiver = new NotificationReceiver(this);
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("PLAY");
+        filter.addAction("PAUSE");
+        filter.addAction("NEXT");
+        filter.addAction("PREVIOUS");
+        registerReceiver(notificationReceiver, filter);
     }
 
     private void createNotificationChannel() {
@@ -91,7 +102,7 @@ public class MusicService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        return START_NOT_STICKY;
+        return START_STICKY;
     }
 
     @Override
@@ -102,9 +113,14 @@ public class MusicService extends Service {
     public void setMusicList(ArrayList<MusicModels> musicList, int position) {
         this.musicList = musicList;
         this.currentPosition = position;
+        showNotification();
     }
 
     public void playMusic(int position) {
+        if (musicList == null || position >= musicList.size()) {
+            return;
+        }
+        
         try {
             mediaPlayer.reset();
             mediaPlayer.setDataSource(musicList.get(position).getPath());
@@ -124,6 +140,24 @@ public class MusicService extends Service {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+    
+    public int getCurrentPosition() {
+        return currentPosition;
+    }
+    
+    public int getCurrentPlaybackPosition() {
+        if (mediaPlayer != null) {
+            return mediaPlayer.getCurrentPosition();
+        }
+        return 0;
+    }
+    
+    public int getTotalDuration() {
+        if (mediaPlayer != null) {
+            return mediaPlayer.getDuration();
+        }
+        return 0;
     }
 
     public void playMusic() {
@@ -204,6 +238,10 @@ public class MusicService extends Service {
     }
 
     private void showNotification() {
+        if (musicList == null || currentPosition >= musicList.size()) {
+            return;
+        }
+        
         MusicModels currentSong = musicList.get(currentPosition);
         
         // Intent for opening the player activity
@@ -336,6 +374,11 @@ public class MusicService extends Service {
         if (mediaSession != null) {
             mediaSession.setActive(false);
             mediaSession.release();
+        }
+        try {
+            unregisterReceiver(notificationReceiver);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }
