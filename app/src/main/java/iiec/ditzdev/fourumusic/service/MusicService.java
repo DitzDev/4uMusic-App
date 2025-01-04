@@ -19,6 +19,7 @@ import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
+import com.google.android.material.datepicker.OnSelectionChangedListener;
 import iiec.ditzdev.fourumusic.R;
 import iiec.ditzdev.fourumusic.activity.MusicPlayerActivity;
 import iiec.ditzdev.fourumusic.models.MusicModels;
@@ -27,6 +28,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class MusicService extends Service {
+    public interface OnSongChangedListener {
+        void onSongChanged(int position);
+    }
     public static final String CHANNEL_ID = "MUSIC_PLAYER_CHANNEL";
     public static final int NOTIFICATION_ID = 1;
     
@@ -38,11 +42,16 @@ public class MusicService extends Service {
     private boolean isShuffleOn = false;
     private int repeatMode = 0;
     private NotificationReceiver notificationReceiver;
+    private OnSongChangedListener songChangeListner;
     
     public class LocalBinder extends Binder {
         public MusicService getService() {
             return MusicService.this;
         }
+    }
+    
+    public void setOnSongChangeListener(OnSongChangedListener listener) {
+        this.songChangeListner = listener;
     }
 
     @Override
@@ -73,7 +82,12 @@ public class MusicService extends Service {
             manager.createNotificationChannel(channel);
         }
     }
-
+    
+    private void notifySongChanged() {
+        if(songChangeListner != null) {
+            songChangeListner.onSongChanged(currentPosition);
+        }
+    }
     private void initMediaSession() {
         mediaSession = new MediaSessionCompat(this, "MusicService");
         mediaSession.setCallback(new MediaSessionCompat.Callback() {
@@ -129,6 +143,7 @@ public class MusicService extends Service {
             currentPosition = position;
             updateMediaSession();
             showNotification();
+            notifySongChanged();
             
             mediaPlayer.setOnCompletionListener(mp -> {
                 if (repeatMode == 2) { // Repeat one
@@ -183,6 +198,7 @@ public class MusicService extends Service {
             currentPosition = (currentPosition + 1) % musicList.size();
         }
         playMusic(currentPosition);
+        notifySongChanged();
     }
 
     public void playPreviousSong() {
@@ -192,6 +208,7 @@ public class MusicService extends Service {
             currentPosition = (currentPosition - 1 + musicList.size()) % musicList.size();
         }
         playMusic(currentPosition);
+        notifySongChanged();
     }
 
     private void updateMediaSession() {
@@ -244,13 +261,10 @@ public class MusicService extends Service {
         
         MusicModels currentSong = musicList.get(currentPosition);
         
-        // Intent for opening the player activity
         Intent intent = new Intent(this, MusicPlayerActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0, intent,
             PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-
-        // Media control actions
         NotificationCompat.Action prevAction = new NotificationCompat.Action(
             R.drawable.icon_skip_previous, "Previous",
             retrievePlaybackAction(3));
@@ -264,7 +278,6 @@ public class MusicService extends Service {
             R.drawable.icon_skip_next, "Next",
             retrievePlaybackAction(2));
 
-        // Get album art
         Bitmap albumArt = null;
         MediaMetadataRetriever retriever = new MediaMetadataRetriever();
         try {
@@ -282,9 +295,8 @@ public class MusicService extends Service {
                 e.printStackTrace();
             }
         }
-
-        // Build notification
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
+            .setBadgeIconType(R.mipmap.ic_launcher)
             .setSmallIcon(R.drawable.icon_music_note)
             .setLargeIcon(albumArt)
             .setContentTitle(currentSong.getTitle())
@@ -299,8 +311,6 @@ public class MusicService extends Service {
             .setOngoing(mediaPlayer.isPlaying())
             .setPriority(NotificationCompat.PRIORITY_LOW)
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
-
-        // Show notification
         if (mediaPlayer.isPlaying()) {
             startForeground(NOTIFICATION_ID, builder.build());
         } else {
@@ -336,9 +346,9 @@ public class MusicService extends Service {
         try {
             retriever.setDataSource(path);
             String artist = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST);
-            return artist != null ? artist : "Artis tidak diketahui";
+            return artist != null ? artist : getString(R.string.action_string_artist_notfound);
         } catch (Exception e) {
-            return "Artis tidak diketahui";
+            return getString(R.string.action_string_artist_notfound);
         } finally {
             try {
                 retriever.release();
@@ -380,5 +390,15 @@ public class MusicService extends Service {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+    
+    @Override
+    public void onTaskRemoved(Intent rootIntent) {
+        super.onTaskRemoved(rootIntent);
+        if (mediaPlayer != null && mediaPlayer.isPlaying()) {
+            mediaPlayer.stop();
+        }
+        stopForeground(true);
+        stopSelf();
     }
 }

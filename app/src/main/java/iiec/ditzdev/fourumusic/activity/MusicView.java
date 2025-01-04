@@ -37,7 +37,7 @@ public class MusicView extends AppCompatActivity {
         mView.setLayoutManager(new LinearLayoutManager(this));
         mView.setAdapter(adapter);
         adapter.setOnItemClickListener(music -> {
-            Toast.makeText(this, "Clicked " + music.getTitle(), Toast.LENGTH_SHORT).show();
+            
         });
     }
 

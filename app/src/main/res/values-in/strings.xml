@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">4uMusic</string>
-    <string name="app_slogan">Dengarkan, Rasakan pengalamannya</string>
-	<string name="drawer">4uMusic</string>
-	<string name="title_perm_storage">Akses Penyimpanan</string>
-    <string name="subtitle_perm_storage">Kami memerlukan izin ini untuk menyimpan dan membaca semua lagu.</string>
+    <string name="app_slogan">Dengarkan, Rasakan Pengalamannya.</string>
+    <string name="drawer">4uMusic</string>
+    <string name="title_perm_storage">Akses Penyimpanan</string>
+    <string name="subtitle_perm_storage">Kami membutuhkan izin ini untuk menyimpan dan membaca semua lagu.</string>
     <string name="action_continue">Lanjutkan</string>
-    <string name="action_ok">Oke, Sudah</string>
-    <string name="action_cancel">Batalkan</string>
+    <string name="action_ok">OK, Atur Ini</string>
+    <string name="action_cancel">Batal</string>
     <string name="title_appereance">Tema Aplikasi</string>
     <string name="subtitle_appereance">Apakah Anda ingin mengatur tema UI Aplikasi?</string>
     <string name="string_subtitle_appereance">Pilih tema UI Aplikasi</string>
@@ -17,10 +17,21 @@
     <string name="title_item_set_light_theme">Tema Terang</string>
     <string name="greeting_morning">Selamat Pagi!</string>
     <string name="greeting_afternoon">Selamat Siang!</string>
-    <string name="good_afternoon">Selamat Sore!</string>
+    <string name="good_afternoon">Selamat Siang!</string>
     <string name="good_night">Selamat Malam!</string>
     <string name="tabs_item_home">Beranda</string>
     <string name="tabs_item_song">Lagu</string>
-    <string name="tabs_item_download">Unduh</string>
+    <string name="tabs_item_download">Unduhan</string>
     <string name="string_action_settings">Pengaturan</string>
+    <string name="action_string_artist_notfound">Artis tidak ditemukan</string>
+    <string name="action_title_deletesong">Hapus Lagu</string>
+    <string name="action_dialog_title_delete">Hapus</string>
+    <string name="action_dialog_subtitle_delete">Apakah Anda yakin ingin menghapus?</string>
+    <string name="action_must_disable_repeat">Nonaktifkan mode ulangi terlebih dahulu.</string>
+    <string name="action_must_disable_shuffle">Nonaktifkan mode acak terlebih dahulu.</string>
+    <string name="random_mode_activate">Mode Acak Diaktifkan</string>
+    <string name="random_mode_disabled">Mode Acak Dinonaktifkan</string>
+    <string name="repeat_allsongs_mode">Ulangi semua lagu</string>
+    <string name="repeat_songs_one_mode">Ulangi lagu saat ini</string>
+    <string name="repeat_mode_nonactivate">Mode ulangi dinonaktifkan</string>
 </resources>

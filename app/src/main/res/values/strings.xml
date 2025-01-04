@@ -23,4 +23,15 @@
     <string name="tabs_item_song">Song</string>
     <string name="tabs_item_download">Download</string>
     <string name="string_action_settings">Settings</string>
+    <string name="action_string_artist_notfound">Artist not found</string>
+    <string name="action_title_deletesong">Delete Song</string>
+    <string name="action_dialog_title_delete">Delete</string>
+    <string name="action_dialog_subtitle_delete">Are you sure you want to delete?</string>
+    <string name="action_must_disable_repeat">Disable repeat mode first.</string>
+    <string name="action_must_disable_shuffle">Disable random mode first.</string>
+    <string name="random_mode_activate">Random Mode Enabled</string>
+    <string name="random_mode_disabled">Random Mode Disabled</string>
+    <string name="repeat_allsongs_mode">Repeat all songs</string>
+    <string name="repeat_songs_one_mode">Repeat current song</string>
+    <string name="repeat_mode_nonactivate">Repeat mode disabled</string>
 </resources>

@@ -30,6 +30,7 @@ import iiec.ditzdev.fourumusic.activity.adapter.MusicAdapter;
 import iiec.ditzdev.fourumusic.databinding.ActivityMusicPlayerBinding;
 import iiec.ditzdev.fourumusic.models.MusicModels;
 import iiec.ditzdev.fourumusic.service.MusicService;
+import iiec.ditzdev.fourumusic.service.MusicService.OnSongChangedListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -45,16 +46,20 @@ public class MusicPlayerActivity extends AppCompatActivity {
     private int currentPosition;
     private Handler handler = new Handler();
     private Runnable runnable;
-    private boolean isShuffleOn = false;
+    private boolean isShuffleOn = true;
     private int repeatMode = 0; // 0: no repeat, 1: repeat all, 2: repeat one
     private Random random = new Random();
     
+    public interface OnSongChangeListener {
+        void onSongChanged(int newPosition);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityMusicPlayerBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        
+
         setSupportActionBar(binding.toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
@@ -70,6 +75,8 @@ public class MusicPlayerActivity extends AppCompatActivity {
         if (musicList != null && !musicList.isEmpty()) {
             startMusicService();
         }
+        binding.repeatBtn.setIconTint(
+                ContextCompat.getColorStateList(this, R.color.material_dynamic_neutral30));
     }
 
     @Override
@@ -86,73 +93,80 @@ public class MusicPlayerActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-    
+
     private void startMusicService() {
         Intent serviceIntent = new Intent(this, MusicService.class);
         startService(serviceIntent);
         bindService(serviceIntent, serviceConnection, Context.BIND_AUTO_CREATE);
     }
-    
-    private ServiceConnection serviceConnection = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            MusicService.LocalBinder binder = (MusicService.LocalBinder) service;
-            musicService = binder.getService();
-            serviceBound = true;
-            musicService.setMusicList(musicList, currentPosition);
-            musicService.setShuffleMode(isShuffleOn);
-            musicService.setRepeatMode(repeatMode);
-            if (!musicService.isPlaying()) {
-                musicService.playMusic(currentPosition);
-            }
-            updateUI(currentPosition);
-            //setupMediaPlayerControls();
-        }
 
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-            musicService = null;
-            serviceBound = false;
-        }
-    };
-    
-    private void setupMediaPlayerControls() {
-        binding.playPauseBtn.setOnClickListener(v -> {
-            if (serviceBound) {
-                if (musicService.isPlaying()) {
-                    musicService.pauseMusic();
-                } else {
-                    musicService.playMusic();
+    private ServiceConnection serviceConnection =
+            new ServiceConnection() {
+                @Override
+                public void onServiceConnected(ComponentName name, IBinder service) {
+                    MusicService.LocalBinder binder = (MusicService.LocalBinder) service;
+                    musicService = binder.getService();
+                    serviceBound = true;
+                    musicService.setMusicList(musicList, currentPosition);
+                    musicService.setShuffleMode(isShuffleOn);
+                    musicService.setRepeatMode(repeatMode);
+                    musicService.setOnSongChangeListener(position -> {
+                        runOnUiThread(() -> {
+                            currentPosition = position;
+                            updateUI(currentPosition);
+                        });
+                    });
+                    if (!musicService.isPlaying()) {
+                        musicService.playMusic(currentPosition);
+                    }
+                    updateUI(currentPosition);
+                    // setupMediaPlayerControls();
                 }
-                updatePlayPauseButton();
-            }
-        });
 
-        binding.nextBtn.setOnClickListener(v -> {
-            if (serviceBound) {
-                musicService.playNextSong();
-                updateUI(musicService.getCurrentPosition());
-            }
-        });
+                @Override
+                public void onServiceDisconnected(ComponentName name) {
+                    musicService = null;
+                    serviceBound = false;
+                }
+            };
 
-        binding.previousBtn.setOnClickListener(v -> {
-            if (serviceBound) {
-                musicService.playPreviousSong();
-                updateUI(musicService.getCurrentPosition());
-            }
-        });
+    private void setupMediaPlayerControls() {
+        binding.playPauseBtn.setOnClickListener(
+                v -> {
+                    if (serviceBound) {
+                        if (musicService.isPlaying()) {
+                            musicService.pauseMusic();
+                        } else {
+                            musicService.playMusic();
+                        }
+                        updatePlayPauseButton();
+                    }
+                });
+
+        binding.nextBtn.setOnClickListener(
+                v -> {
+                    if (serviceBound) {
+                        musicService.playNextSong();
+                        updateUI(musicService.getCurrentPosition());
+                    }
+                });
+
+        binding.previousBtn.setOnClickListener(
+                v -> {
+                    if (serviceBound) {
+                        musicService.playPreviousSong();
+                        updateUI(musicService.getCurrentPosition());
+                    }
+                });
     }
-    
+
     private void updatePlayPauseButton() {
         if (serviceBound) {
             binding.playPauseBtn.setImageResource(
-                musicService.isPlaying() ? 
-                R.drawable.icon_pause : 
-                R.drawable.icon_play
-            );
+                    musicService.isPlaying() ? R.drawable.icon_pause : R.drawable.icon_play);
         }
     }
-    
+
     private void updateToolbarInfo(int position) {
         MusicModels currentSong = musicList.get(position);
         binding.toolbar.setTitle(currentSong.getTitle());
@@ -162,7 +176,8 @@ public class MusicPlayerActivity extends AppCompatActivity {
             titleView.setSelected(true);
             titleView.setSingleLine(true);
         }
-    }     
+    }
+
     private void getMusicData() {
         musicList = getIntent().getParcelableArrayListExtra("MUSIC_LIST");
         currentPosition = getIntent().getIntExtra("POSITION", 0);
@@ -173,93 +188,101 @@ public class MusicPlayerActivity extends AppCompatActivity {
         Intent intent = new Intent(this, MusicService.class);
         bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
     }
-    
+
     private void showDeleteDialog() {
         new MaterialAlertDialogBuilder(this)
-            .setTitle("Hapus Lagu")
-            .setMessage("Apakah Anda yakin ingin menghapus lagu ini?")
-            .setPositiveButton("Hapus", (dialog, which) -> deleteSong())
-            .setNegativeButton("Batal", null)
-            .show();
+                .setTitle(getString(R.string.action_dialog_title_delete))
+                .setMessage(R.string.action_dialog_subtitle_delete)
+                .setPositiveButton(
+                        getString(R.string.action_dialog_title_delete),
+                        (dialog, which) -> deleteSong())
+                .setNegativeButton(getString(R.string.action_cancel), null)
+                .show();
     }
 
     private void deleteSong() {
         MusicModels currentSong = musicList.get(currentPosition);
         File file = new File(currentSong.getPath());
-        
+
         if (file.delete()) {
             ContentResolver contentResolver = getContentResolver();
             Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
             String selection = MediaStore.Audio.Media.DATA + "=?";
-            String[] selectionArgs = new String[]{ currentSong.getPath() };
+            String[] selectionArgs = new String[] {currentSong.getPath()};
             contentResolver.delete(uri, selection, selectionArgs);
             musicList.remove(currentPosition);
             originalList.remove(currentPosition);
-            
+
             if (musicList.isEmpty()) {
                 finish();
             } else {
-                playNextSong();
+                musicService.playNextSong();
             }
         }
     }
 
     private void setupClickListeners() {
-        binding.playPauseBtn.setOnClickListener(v -> {
-            if (serviceBound && musicService != null) {
-                if (musicService.isPlaying()) {
-                    musicService.pauseMusic();
-                } else {
-                    musicService.playMusic();
-                }
-                updatePlayPauseButton();
-            }
-        });
+        binding.playPauseBtn.setOnClickListener(
+                v -> {
+                    if (serviceBound && musicService != null) {
+                        if (musicService.isPlaying()) {
+                            musicService.pauseMusic();
+                        } else {
+                            musicService.playMusic();
+                        }
+                        updatePlayPauseButton();
+                    }
+                });
 
-        binding.nextBtn.setOnClickListener(v -> {
-            if (serviceBound && musicService != null) {
-                musicService.playNextSong();
-                currentPosition = musicService.getCurrentPosition();
-                updateUI(currentPosition);
-            }
-        });
+        binding.nextBtn.setOnClickListener(
+                v -> {
+                    if (serviceBound && musicService != null) {
+                        musicService.playNextSong();
+                        currentPosition = musicService.getCurrentPosition();
+                        updateUI(currentPosition);
+                    }
+                });
 
-        binding.previousBtn.setOnClickListener(v -> {
-            if (serviceBound && musicService != null) {
-                musicService.playPreviousSong();
-                currentPosition = musicService.getCurrentPosition();
-                updateUI(currentPosition);
-            }
-        });
+        binding.previousBtn.setOnClickListener(
+                v -> {
+                    if (serviceBound && musicService != null) {
+                        musicService.playPreviousSong();
+                        currentPosition = musicService.getCurrentPosition();
+                        updateUI(currentPosition);
+                    }
+                });
 
         binding.shuffleBtn.setOnClickListener(v -> toggleShuffle());
         binding.repeatBtn.setOnClickListener(v -> toggleRepeat());
     }
 
     private void setupSlider() {
-        binding.seekBar.addOnChangeListener(new Slider.OnChangeListener() {
-            @Override
-            public void onValueChange(Slider slider, float value, boolean fromUser) {
-                if (fromUser && serviceBound && musicService != null) {
-                    musicService.getMediaPlayer().seekTo((int) value);
-                }
-            }
-        });
+        binding.seekBar.setLabelFormatter(value -> formatDuration((int) value));
+        binding.seekBar.addOnChangeListener(
+                new Slider.OnChangeListener() {
+                    @Override
+                    public void onValueChange(Slider slider, float value, boolean fromUser) {
+                        if (fromUser && serviceBound && musicService != null) {
+                            musicService.getMediaPlayer().seekTo((int) value);
+                        }
+                    }
+                });
 
-        runnable = new Runnable() {
-            @Override
-            public void run() {
-                if (serviceBound && musicService != null) {
-                    binding.seekBar.setValue(musicService.getCurrentPlaybackPosition());
-                    binding.tvCurrentTime.setText(formatDuration(musicService.getCurrentPlaybackPosition()));
-                }
-                handler.postDelayed(this, 100);
-            }
-        };
+        runnable =
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        if (serviceBound && musicService != null) {
+                            binding.seekBar.setValue(musicService.getCurrentPlaybackPosition());
+                            binding.tvCurrentTime.setText(
+                                    formatDuration(musicService.getCurrentPlaybackPosition()));
+                        }
+                        handler.postDelayed(this, 100);
+                    }
+                };
         handler.postDelayed(runnable, 100);
     }
 
-    
     private void updateUI(int position) {
         if (!serviceBound || musicService == null) return;
 
@@ -270,7 +293,8 @@ public class MusicPlayerActivity extends AppCompatActivity {
         try {
             retriever.setDataSource(currentSong.getPath());
             String artist = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST);
-            binding.toolbar.setSubtitle(artist != null ? artist : "Artis tidak diketahui");
+            binding.toolbar.setSubtitle(
+                    artist != null ? artist : getString(R.string.action_string_artist_notfound));
 
             byte[] art = retriever.getEmbeddedPicture();
             if (art != null) {
@@ -279,8 +303,6 @@ public class MusicPlayerActivity extends AppCompatActivity {
             } else {
                 binding.albumArt.setImageResource(R.drawable.icon_music_note);
             }
-
-            // Update slider dan durasi
             binding.seekBar.setValueFrom(0);
             binding.seekBar.setValueTo(musicService.getTotalDuration());
             binding.tvTotalDuration.setText(formatDuration(musicService.getTotalDuration()));
@@ -297,72 +319,100 @@ public class MusicPlayerActivity extends AppCompatActivity {
 
         updatePlayPauseButton();
     }
-
-    private void pauseMusic() {
-        musicService.pauseMusic();
-        binding.playPauseBtn.setImageResource(R.drawable.icon_play);
-    }
-
-    private void playNextSong() {
-        if (isShuffleOn) {
-            currentPosition = random.nextInt(musicList.size());
-        } else {
-            currentPosition = (currentPosition + 1) % musicList.size();
-        }
-        musicService.playMusic(currentPosition);
-    }
-
-    private void playPreviousSong() {
-        if (isShuffleOn) {
-            currentPosition = random.nextInt(musicList.size());
-        } else {
-            currentPosition = (currentPosition - 1 + musicList.size()) % musicList.size();
-        }
-        musicService.playMusic(currentPosition);
-    }
+    
+    /* @Deprecated */
+    //  private void pauseMusic() {
+    //    musicService.pauseMusic();
+    //    binding.playPauseBtn.setImageResource(R.drawable.icon_play);
+    //  }
+    //
+    //  private void playNextSong() {
+    //    if (isShuffleOn) {
+    //      currentPosition = random.nextInt(musicList.size());
+    //    } else {
+    //      currentPosition = (currentPosition + 1) % musicList.size();
+    //    }
+    //    musicService.playMusic(currentPosition);
+    //  }
+    //
+    //    private void playPreviousSong() {
+    //        if (isShuffleOn) {
+    //            currentPosition = random.nextInt(musicList.size());
+    //        } else {
+    //            currentPosition = (currentPosition - 1 + musicList.size()) % musicList.size();
+    //        }
+    //        musicService.playMusic(currentPosition);
+    //    }
 
     private void toggleShuffle() {
+        if (repeatMode != 0) {
+            Toast.makeText(this, getString(R.string.action_must_disable_repeat), Toast.LENGTH_SHORT)
+                    .show();
+            return;
+        }
+
+        binding.shuffleBtn.setIconTint(
+                ContextCompat.getColorStateList(this, R.color.material_dynamic_neutral30));
+
         isShuffleOn = !isShuffleOn;
         if (serviceBound && musicService != null) {
             musicService.setShuffleMode(isShuffleOn);
         }
         binding.shuffleBtn.setIconTint(
-            ContextCompat.getColorStateList(this, 
-                isShuffleOn ? R.color.material_dynamic_primary60 : R.color.material_dynamic_neutral30));
-        
-        Toast.makeText(this, 
-            isShuffleOn ? "Mode acak aktif" : "Mode acak nonaktif", 
-            Toast.LENGTH_SHORT).show();
+                ContextCompat.getColorStateList(
+                        this,
+                        isShuffleOn
+                                ? R.color.material_dynamic_primary60
+                                : R.color.material_dynamic_neutral30));
+
+        Toast.makeText(
+                        this,
+                        isShuffleOn
+                                ? getString(R.string.random_mode_activate)
+                                : getString(R.string.random_mode_disabled),
+                        Toast.LENGTH_SHORT)
+                .show();
     }
-    
+
     private void toggleRepeat() {
+        if (isShuffleOn) {
+            Toast.makeText(
+                            this,
+                            getString(R.string.action_must_disable_shuffle),
+                            Toast.LENGTH_SHORT)
+                    .show();
+            binding.repeatBtn.setIconTint(
+                    ContextCompat.getColorStateList(this, R.color.material_dynamic_neutral30));
+            return;
+        }
+
         repeatMode = (repeatMode + 1) % 3;
         if (serviceBound && musicService != null) {
             musicService.setRepeatMode(repeatMode);
         }
-        
+
         int iconRes;
         int tintColor;
         String toastMessage;
-        
+
         switch (repeatMode) {
             case 1:
                 iconRes = R.drawable.icon_repeat;
                 tintColor = R.color.material_dynamic_primary60;
-                toastMessage = "Ulangi semua lagu";
+                toastMessage = getString(R.string.repeat_allsongs_mode);
                 break;
             case 2:
                 iconRes = R.drawable.icon_repeat_one;
                 tintColor = R.color.material_dynamic_primary60;
-                toastMessage = "Ulangi lagu saat ini";
+                toastMessage = getString(R.string.repeat_songs_one_mode);
                 break;
             default:
                 iconRes = R.drawable.icon_repeat;
                 tintColor = R.color.material_dynamic_neutral30;
-                toastMessage = "Mode pengulangan nonaktif";
+                toastMessage = getString(R.string.repeat_mode_nonactivate);
                 break;
         }
-        
+
         binding.repeatBtn.setIcon(ContextCompat.getDrawable(this, iconRes));
         binding.repeatBtn.setIconTint(ContextCompat.getColorStateList(this, tintColor));
         Toast.makeText(this, toastMessage, Toast.LENGTH_SHORT).show();
@@ -373,7 +423,7 @@ public class MusicPlayerActivity extends AppCompatActivity {
         long seconds = (duration / 1000) % 60;
         return String.format("%02d:%02d", minutes, seconds);
     }
-    
+
     @Override
     public boolean onSupportNavigateUp() {
         onBackPressed();
@@ -396,7 +446,8 @@ public class MusicPlayerActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (serviceBound) {
+        if (serviceBound && musicService != null) {
+            musicService.setOnSongChangeListener(null);
             unbindService(serviceConnection);
             serviceBound = false;
         }
